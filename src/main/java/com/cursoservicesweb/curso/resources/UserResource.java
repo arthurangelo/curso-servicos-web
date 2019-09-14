@@ -15,6 +15,8 @@ import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
 import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
+import com.cursoservicesweb.curso.dto.UserDTO;
+import com.cursoservicesweb.curso.dto.UserInsertDTO;
 import com.cursoservicesweb.curso.entities.User;
 import com.cursoservicesweb.curso.services.UserService;
 
@@ -26,25 +28,24 @@ public class UserResource {
 	private UserService service;
 
 	@GetMapping
-	public ResponseEntity<List<User>> findAll() {
-		List<User> list = service.findAll();
-
+	public ResponseEntity<List<UserDTO>> findAll() {
+		List<UserDTO> list = service.findAll();
 		return ResponseEntity.ok().body(list);
 
 	}
 
 	@GetMapping(value = "/{id}")
-	public ResponseEntity<User> findbyId(@PathVariable Long id) {
-		User obj = service.findById(id);
+	public ResponseEntity<UserDTO> findbyId(@PathVariable Long id) {
+		UserDTO obj = service.findById(id);
 		return ResponseEntity.ok().body(obj);
 	}
 
 	@PostMapping
-	public ResponseEntity<User> insert(@RequestBody User obj){
-		obj = service.insert(obj);
+	public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO obj){
+		UserDTO newDTO = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
-				.buildAndExpand(obj.getId()).toUri();
-		return ResponseEntity.created(uri).body(obj);
+				.buildAndExpand(newDTO.getId()).toUri();
+		return ResponseEntity.created(uri).body(newDTO);
 	}
 	
 	@DeleteMapping(value = "/{id}")

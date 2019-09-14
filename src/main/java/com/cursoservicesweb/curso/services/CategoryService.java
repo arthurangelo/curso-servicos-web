@@ -11,7 +11,6 @@ import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 
 import com.cursoservicesweb.curso.entities.Category;
-import com.cursoservicesweb.curso.entities.User;
 import com.cursoservicesweb.curso.repositories.CategoryRepository;
 import com.cursoservicesweb.curso.services.exceptions.DatabaseException;
 import com.cursoservicesweb.curso.services.exceptions.ResourceNotFoundException;
