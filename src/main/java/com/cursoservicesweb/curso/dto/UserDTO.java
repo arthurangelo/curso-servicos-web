@@ -68,7 +68,7 @@ public class UserDTO implements Serializable {
 	}
 	
 	public User toEntity() {
-		return new User(id, name,email,phone);
+		return new User(id, name,email,phone,null);
 	}
 
 	
