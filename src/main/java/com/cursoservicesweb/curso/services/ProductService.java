@@ -7,6 +7,8 @@ import java.util.stream.Collectors;
 import javax.persistence.EntityNotFoundException;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.dao.DataIntegrityViolationException;
+import org.springframework.dao.EmptyResultDataAccessException;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
@@ -20,6 +22,7 @@ import com.cursoservicesweb.curso.entities.Product;
 import com.cursoservicesweb.curso.entities.User;
 import com.cursoservicesweb.curso.repositories.CategoryRepository;
 import com.cursoservicesweb.curso.repositories.ProductRepository;
+import com.cursoservicesweb.curso.services.exceptions.DatabaseException;
 import com.cursoservicesweb.curso.services.exceptions.ResourceNotFoundException;
 
 @Service
@@ -65,6 +68,17 @@ public class ProductService {
 		}
 		
 		
+	}
+	
+	public void delete(Long id) {
+		try {
+			repository.deleteById(id);
+
+		} catch (EmptyResultDataAccessException e) {
+			throw new ResourceNotFoundException(id);
+		}catch (DataIntegrityViolationException e) {
+			throw new DatabaseException(e.getMessage());
+		}
 	}
 	
 	private void updateData(Product entity, ProductCategoriesDTO dto) {

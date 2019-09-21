@@ -3,6 +3,8 @@ package com.cursoservicesweb.curso.resources;
 import java.net.URI;
 import java.util.List;
 
+import javax.validation.Valid;
+
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
 import org.springframework.web.bind.annotation.DeleteMapping;
@@ -17,7 +19,6 @@ import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
 
 import com.cursoservicesweb.curso.dto.UserDTO;
 import com.cursoservicesweb.curso.dto.UserInsertDTO;
-import com.cursoservicesweb.curso.entities.User;
 import com.cursoservicesweb.curso.services.UserService;
 
 @RestController
@@ -41,7 +42,7 @@ public class UserResource {
 	}
 
 	@PostMapping
-	public ResponseEntity<UserDTO> insert(@RequestBody UserInsertDTO obj){
+	public ResponseEntity<UserDTO> insert(@Valid @RequestBody UserInsertDTO obj){
 		UserDTO newDTO = service.insert(obj);
 		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
 				.buildAndExpand(newDTO.getId()).toUri();
