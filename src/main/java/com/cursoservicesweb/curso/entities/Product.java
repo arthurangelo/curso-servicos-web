@@ -14,7 +14,7 @@ import javax.persistence.ManyToMany;
 import javax.persistence.OneToMany;
 import javax.persistence.Table;
 
-import com.fasterxml.jackson.annotation.JsonIgnore;
+
 
 @Entity
 @Table(name = "tb_product")
@@ -90,7 +90,6 @@ public class Product implements Serializable {
 		this.imgUrl = imgUrl;
 	}
 	
-	@JsonIgnore
 	public Set<Order> getOrders(){
 		Set<Order> set = new HashSet<>();
 		for(OrderItem item :items) {
