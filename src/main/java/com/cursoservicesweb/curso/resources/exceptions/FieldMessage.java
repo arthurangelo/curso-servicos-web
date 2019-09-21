@@ -4,6 +4,10 @@ import java.io.Serializable;
 
 public class FieldMessage implements Serializable{
 	
+	/**
+	 * 
+	 */
+	private static final long serialVersionUID = 776563902923697103L;
 	private String fieldName;
 	private String message;
 	
@@ -14,5 +18,23 @@ public class FieldMessage implements Serializable{
 	public FieldMessage(String fieldName, String message ) {
 		
 	}
+
+	public String getFieldName() {
+		return fieldName;
+	}
+
+	public void setFieldName(String fieldName) {
+		this.fieldName = fieldName;
+	}
+
+	public String getMessage() {
+		return message;
+	}
+
+	public void setMessage(String message) {
+		this.message = message;
+	}
+	
+	
 
 }

@@ -8,34 +8,35 @@ import javax.validation.constraints.NotEmpty;
 import org.hibernate.validator.constraints.Length;
 
 import com.cursoservicesweb.curso.entities.User;
+import com.cursoservicesweb.curso.services.validation.UserInsertValid;
 
+@UserInsertValid
 public class UserInsertDTO implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3952838324287883337L;
 	private Long id;
-	
+
 	@NotEmpty(message = "can't by empty!")
-	@Length(min = 5 , max = 80, message = "length mus be between 5 and 80")
+	@Length(min = 5, max = 80, message = "length mus be between 5 and 80")
 	private String name;
-	
+
 	@Email(message = "invalid email")
 	private String email;
-	
+
 	@NotEmpty(message = "can't by empty!")
-	@Length(min = 8 , max = 20, message = "length mus be between 5 and 80")
+	@Length(min = 8, max = 20, message = "length mus be between 5 and 80")
 	private String phone;
-	
+
 	@NotEmpty(message = "can't by empty!")
 	private String password;
 
-	
 	public UserInsertDTO() {
-		
+
 	}
-	
-	public UserInsertDTO(Long id, String name, String email, String phone , String password) {
+
+	public UserInsertDTO(Long id, String name, String email, String phone, String password) {
 		super();
 		this.id = id;
 		this.name = name;
@@ -43,7 +44,7 @@ public class UserInsertDTO implements Serializable {
 		this.phone = phone;
 		this.password = password;
 	}
-	
+
 	public UserInsertDTO(User user) {
 		this.id = user.getId();
 		this.name = user.getName();
@@ -84,9 +85,9 @@ public class UserInsertDTO implements Serializable {
 	public void setPhone(String phone) {
 		this.phone = phone;
 	}
-	
+
 	public User toEntity() {
-		return new User(id, name,email,phone,password);
+		return new User(id, name, email, phone, password);
 	}
 
 	public String getPassword() {
@@ -121,7 +122,5 @@ public class UserInsertDTO implements Serializable {
 			return false;
 		return true;
 	}
-	
-	
-	
+
 }
