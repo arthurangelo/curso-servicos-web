@@ -4,6 +4,11 @@ import java.io.Serializable;
 import java.util.ArrayList;
 import java.util.List;
 
+import javax.validation.constraints.NotEmpty;
+import javax.validation.constraints.Positive;
+
+import org.hibernate.validator.constraints.Length;
+
 import com.cursoservicesweb.curso.entities.Product;
 
 public class ProductCategoriesDTO implements Serializable{
@@ -11,8 +16,15 @@ public class ProductCategoriesDTO implements Serializable{
 	 * 
 	 */
 	private static final long serialVersionUID = -5642380515338921104L;
+	@NotEmpty(message = "Nome não pode ser vazio")
+	@Length(min = 3 , max = 80, message = "Nome precisa conter no minimo 3 e no maximo 80 caracteres")
 	private String name;
+	
+	@NotEmpty(message = "Descrição não pode ser vazio")
+	@Length(min = 3, message = "Descrição precisa conter no minimo 8")
 	private String description;
+
+	@Positive(message = "Preço deve conter um valor maior que 0")
 	private Double price;
 	private String imgUrl;
 
