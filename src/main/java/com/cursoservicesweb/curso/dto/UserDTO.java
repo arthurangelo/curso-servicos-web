@@ -3,15 +3,28 @@ package com.cursoservicesweb.curso.dto;
 import java.io.Serializable;
 
 import com.cursoservicesweb.curso.entities.User;
+import com.cursoservicesweb.curso.services.validation.UserUpdateValid;
+import org.hibernate.validator.constraints.Length;
 
+import javax.validation.constraints.Email;
+import javax.validation.constraints.NotEmpty;
+
+@UserUpdateValid
 public class UserDTO implements Serializable {
 	/**
 	 * 
 	 */
 	private static final long serialVersionUID = 3952838324287883337L;
 	private Long id;
+	@NotEmpty(message = "can't by empty!")
+	@Length(min = 5, max = 80, message = "length mus be between 5 and 80")
 	private String name;
+
+	@Email(message = "invalid email")
 	private String email;
+
+	@NotEmpty(message = "can't by empty!")
+	@Length(min = 8, max = 20, message = "length mus be between 5 and 80")
 	private String phone;
 	
 	public UserDTO() {
