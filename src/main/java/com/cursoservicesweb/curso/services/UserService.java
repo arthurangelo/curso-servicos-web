@@ -11,6 +11,7 @@ import javax.transaction.Transactional;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 import org.springframework.stereotype.Service;
 
 import com.cursoservicesweb.curso.dto.UserDTO;
@@ -22,7 +23,9 @@ import com.cursoservicesweb.curso.services.exceptions.ResourceNotFoundException;
 
 @Service
 public class UserService {
-	
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
 	@Autowired
 	private UserRepository repository;
 	
@@ -41,6 +44,7 @@ public class UserService {
 	
 	public UserDTO insert(UserInsertDTO dto) {
 		User entity = dto.toEntity();
+		entity.setPassword(passwordEncoder.encode(dto.getPassword()));
 		entity = repository.save(entity);
 		return new UserDTO(entity);
 	}

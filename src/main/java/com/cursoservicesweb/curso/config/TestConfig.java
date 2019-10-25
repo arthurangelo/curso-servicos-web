@@ -11,6 +11,7 @@ import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
 import com.cursoservicesweb.curso.entities.enums.OrderStatus;
+import org.springframework.security.crypto.bcrypt.BCryptPasswordEncoder;
 
 @Configuration
 @Profile("test")
@@ -35,6 +36,9 @@ public class TestConfig implements CommandLineRunner{
 	@Autowired
 	private RoleRepository roleRepository;
 
+	@Autowired
+	private BCryptPasswordEncoder passwordEncoder;
+
 	@Override
 	public void run(String... args) throws Exception {
 		
@@ -48,8 +52,8 @@ public class TestConfig implements CommandLineRunner{
 		Category cat2 = new Category(null, "Books");
 		Category cat3 = new Category(null, "Computers");
 		
-		User u1 = new User(null, "Maria Brown", "maria@gmail.com", "988888888", "123456");
-		User u2 = new User(null, "Alex Green", "alex@gmail.com", "977777777", "123456");
+		User u1 = new User(null, "Maria Brown", "maria@gmail.com", "988888888", passwordEncoder.encode("123456"));
+		User u2 = new User(null, "Alex Green", "alex@gmail.com", "977777777", passwordEncoder.encode("123456"));
 
 		Role r1 = new Role(null,"ROLE_CLIENT");
 		Role r2 = new Role(null,"ROLE_ADMIN");
