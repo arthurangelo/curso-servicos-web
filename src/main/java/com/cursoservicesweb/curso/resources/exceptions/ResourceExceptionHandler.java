@@ -5,6 +5,7 @@ import java.time.Instant;
 import javax.servlet.http.HttpServletRequest;
 
 import com.cursoservicesweb.curso.services.exceptions.JWTAuthenticationException;
+import com.cursoservicesweb.curso.services.exceptions.JWTAuthorizationException;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
@@ -51,6 +52,14 @@ public class ResourceExceptionHandler {
 	public ResponseEntity<StandardError> jwtAuthetication(JWTAuthenticationException e,HttpServletRequest request){
 		String error = "Authentication error";
 		HttpStatus status = HttpStatus.UNAUTHORIZED;
+		StandardError err = new StandardError(Instant.now(),status.value(),error,e.getMessage(),request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(JWTAuthorizationException.class)
+	public ResponseEntity<StandardError>  jwtAuthorization(JWTAuthorizationException e,HttpServletRequest request){
+		String error = "Authorization error";
+		HttpStatus status = HttpStatus.FORBIDDEN;
 		StandardError err = new StandardError(Instant.now(),status.value(),error,e.getMessage(),request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}
