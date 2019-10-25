@@ -3,23 +3,14 @@ package com.cursoservicesweb.curso.config;
 import java.time.Instant;
 import java.util.Arrays;
 
+import com.cursoservicesweb.curso.entities.*;
+import com.cursoservicesweb.curso.repositories.*;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.CommandLineRunner;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.context.annotation.Profile;
 
-import com.cursoservicesweb.curso.entities.Category;
-import com.cursoservicesweb.curso.entities.Order;
-import com.cursoservicesweb.curso.entities.OrderItem;
-import com.cursoservicesweb.curso.entities.Payment;
-import com.cursoservicesweb.curso.entities.Product;
-import com.cursoservicesweb.curso.entities.User;
 import com.cursoservicesweb.curso.entities.enums.OrderStatus;
-import com.cursoservicesweb.curso.repositories.CategoryRepository;
-import com.cursoservicesweb.curso.repositories.OrderItemRepository;
-import com.cursoservicesweb.curso.repositories.OrderRepository;
-import com.cursoservicesweb.curso.repositories.ProductRepository;
-import com.cursoservicesweb.curso.repositories.UserRepository;
 
 @Configuration
 @Profile("test")
@@ -41,10 +32,11 @@ public class TestConfig implements CommandLineRunner{
 	@Autowired
 	private OrderItemRepository orderItemRepository;
 
+	@Autowired
+	private RoleRepository roleRepository;
+
 	@Override
 	public void run(String... args) throws Exception {
-		
-		
 		
 		Product p1 = new Product(null, "The Lord of the Rings", "Lorem ipsum dolor sit amet, consectetur.", 90.5, "");
 		Product p2 = new Product(null, "Smart TV", "Nulla eu imperdiet purus. Maecenas ante.", 2190.0, "");
@@ -57,9 +49,11 @@ public class TestConfig implements CommandLineRunner{
 		Category cat3 = new Category(null, "Computers");
 		
 		User u1 = new User(null, "Maria Brown", "maria@gmail.com", "988888888", "123456");
-		
 		User u2 = new User(null, "Alex Green", "alex@gmail.com", "977777777", "123456");
-		
+
+		Role r1 = new Role(null,"ROLE_CLIENT");
+		Role r2 = new Role(null,"ROLE_ADMIN");
+
 		Order o1 = new Order(null, Instant.parse("2019-06-20T19:53:07Z"), u1,OrderStatus.PAID);
 		Order o2 = new Order(null, Instant.parse("2019-07-21T03:42:10Z"), u2,OrderStatus.WAITING_PAYMENT);
 		Order o3 = new Order(null, Instant.parse("2019-07-22T15:21:22Z"), u1,OrderStatus.WAITING_PAYMENT);
@@ -82,8 +76,16 @@ public class TestConfig implements CommandLineRunner{
 		
 		productRepository.saveAll(Arrays.asList(p1,p2,p3,p4,p5));
 
-		userRepository.saveAll( Arrays.asList(u1,u2));
-		
+		userRepository.saveAll(Arrays.asList(u1,u2));
+
+		roleRepository.saveAll(Arrays.asList(r1,r2));
+
+		u1.gerRoles().add(r1);
+		u2.gerRoles().add(r1);
+		u2.gerRoles().add(r2);
+
+		userRepository.saveAll(Arrays.asList(u1,u2));
+
 		orderRepository.saveAll(Arrays.asList(o1,o2,o3));
 		
 		orderItemRepository.saveAll(Arrays.asList(oi1,oi2,oi3,oi4));
