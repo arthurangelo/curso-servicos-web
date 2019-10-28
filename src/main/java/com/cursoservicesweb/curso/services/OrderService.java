@@ -7,6 +7,7 @@ import java.util.stream.Collectors;
 
 import com.cursoservicesweb.curso.dto.OrderItemDTO;
 import com.cursoservicesweb.curso.entities.OrderItem;
+import com.cursoservicesweb.curso.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
@@ -25,6 +26,9 @@ public class OrderService {
 
     @Autowired
     private AuthService authService;
+
+    @Autowired
+	private UserRepository userRepository;
 
     public List<OrderDTO> findAll() {
         List<Order> list = repository.findAll();
@@ -54,4 +58,11 @@ public class OrderService {
         return set.stream().map(e -> new OrderItemDTO(e)).collect(Collectors.toList());
 
     }
+
+	@Transactional(readOnly = true)
+	public List<OrderDTO> findByClientId(Long clientId) {
+		User client = userRepository.getOne(clientId);
+		List<Order> listOrder = repository.findByClient(client);
+		return listOrder.stream().map(e -> new OrderDTO(e)).collect(Collectors.toList());
+	}
 }

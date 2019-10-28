@@ -45,7 +45,14 @@ public class OrderResource {
 	@GetMapping(value = "/{id}/items")
 	public ResponseEntity<List<OrderItemDTO>> findItems(@PathVariable Long id){
 		List<OrderItemDTO> list = service.findItems(id);
-		return ResponseEntity.ok().body(obj);
+		return ResponseEntity.ok().body(list);
+	}
+
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	@GetMapping(value = "/client/{clientId}")
+	public ResponseEntity<List<OrderDTO>> findByClientId(@PathVariable Long clientId){
+		List<OrderDTO> list = service.findByClientId(clientId);
+		return ResponseEntity.ok().body(list);
 	}
 
 }
