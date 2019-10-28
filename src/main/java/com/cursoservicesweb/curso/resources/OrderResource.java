@@ -27,13 +27,18 @@ public class OrderResource {
 		List<OrderDTO> list = service.findAll();
 		
 		return ResponseEntity.ok().body(list);
-		
 	}
 
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<OrderDTO> findbyId(@PathVariable Long id){
 		OrderDTO obj = service.findById(id);
 		return ResponseEntity.ok().body(obj);
+	}
+
+	@GetMapping(value = "/myorders")
+	public ResponseEntity<List<OrderDTO>> findByClient(){
+		List<OrderDTO> list = service.findByClient();
+		return ResponseEntity.ok().body(list);
 	}
 
 }

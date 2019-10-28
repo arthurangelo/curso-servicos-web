@@ -3,6 +3,7 @@ package com.cursoservicesweb.curso.services;
 import com.cursoservicesweb.curso.Security.JWTUtil;
 import com.cursoservicesweb.curso.dto.CredentialsDTO;
 import com.cursoservicesweb.curso.dto.TokenDTO;
+import com.cursoservicesweb.curso.entities.Order;
 import com.cursoservicesweb.curso.entities.User;
 import com.cursoservicesweb.curso.repositories.UserRepository;
 import com.cursoservicesweb.curso.services.exceptions.JWTAuthenticationException;
@@ -60,6 +61,14 @@ public class AuthService {
         User user = authenticad();
 
         if(user == null || (!user.getId().equals(id)) && !user.hasRole("ROLE_ADMIN")){
+            throw new JWTAuthorizationException("Access denied");
+        }
+    }
+
+    public void validateOwrOrderAdmin(Order order) {
+        User user = authenticad();
+
+        if(user == null || (!user.getId().equals(order.getClient().getId())) && !user.hasRole("ROLE_ADMIN")){
             throw new JWTAuthorizationException("Access denied");
         }
     }

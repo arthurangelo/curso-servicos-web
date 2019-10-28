@@ -18,18 +18,26 @@ public class OrderService {
 	
 	@Autowired
 	private OrderRepository repository;
+
+	@Autowired
+	private AuthService authService;
 	
 	public List<OrderDTO> findAll(){
 		List<Order> list = repository.findAll();
 		return list.stream().map(e -> new OrderDTO(e)).collect(Collectors.toList());
-		
 	}
 	
 	public OrderDTO findById(Long id) {
 		Optional<Order> obj = repository.findById(id);
 		Order entity =  obj.orElseThrow( () -> new ResourceNotFoundException(id));
-		
+		authService.validateOwrOrderAdmin(entity);
 		return new OrderDTO(entity);
+	}
+
+	public List<OrderDTO> findByClient(){
+		User user = authService.authenticad();
+		List<Order> listOrder = repository.findByClient(user);
+		return listOrder.stream().map(e -> new OrderDTO(e)).collect(Collectors.toList());
 	}
 	
 
