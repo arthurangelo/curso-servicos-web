@@ -6,9 +6,9 @@ import java.util.Optional;
 import java.util.Set;
 import java.util.stream.Collectors;
 
+import com.cursoservicesweb.curso.dto.CategoryDTO;
 import com.cursoservicesweb.curso.dto.OrderItemDTO;
-import com.cursoservicesweb.curso.entities.OrderItem;
-import com.cursoservicesweb.curso.entities.Product;
+import com.cursoservicesweb.curso.entities.*;
 import com.cursoservicesweb.curso.entities.enums.OrderStatus;
 import com.cursoservicesweb.curso.repositories.OrderItemRepository;
 import com.cursoservicesweb.curso.repositories.ProductRepository;
@@ -17,11 +17,11 @@ import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
 
 import com.cursoservicesweb.curso.dto.OrderDTO;
-import com.cursoservicesweb.curso.entities.Order;
-import com.cursoservicesweb.curso.entities.User;
 import com.cursoservicesweb.curso.repositories.OrderRepository;
 import com.cursoservicesweb.curso.services.exceptions.ResourceNotFoundException;
 import org.springframework.transaction.annotation.Transactional;
+
+import javax.persistence.EntityNotFoundException;
 
 @Service
 public class OrderService {
@@ -95,4 +95,19 @@ public class OrderService {
         return new OrderDTO(order);
 
 	}
+
+    @Transactional
+    public OrderDTO update(Long id , OrderDTO obj) {
+        try {
+            Order entity = repository.getOne(id);
+            entity.setOrderStatus(obj.getOrderStatus());
+
+            entity =  repository.save(entity);
+            return new OrderDTO(entity);
+
+        } catch (EntityNotFoundException e) {
+            throw new ResourceNotFoundException(id);
+        }
+    }
+
 }

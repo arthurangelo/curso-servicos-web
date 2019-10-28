@@ -3,6 +3,7 @@ package com.cursoservicesweb.curso.resources;
 import java.net.URI;
 import java.util.List;
 
+import com.cursoservicesweb.curso.dto.CategoryDTO;
 import com.cursoservicesweb.curso.dto.OrderItemDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.ResponseEntity;
@@ -62,6 +63,13 @@ public class OrderResource {
 				.buildAndExpand(orderDTO.getId()).toUri();
 
 		return ResponseEntity.created(uri).body(orderDTO);
+	}
+
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<OrderDTO> update(@PathVariable Long id, @RequestBody OrderDTO obj){
+		obj = service.update(id, obj);
+		return ResponseEntity.ok().body(obj);
 	}
 
 }
