@@ -1,6 +1,7 @@
 package com.cursoservicesweb.curso.resources;
 
 import com.cursoservicesweb.curso.dto.PaymentDTO;
+import com.cursoservicesweb.curso.dto.PaymentDTO;
 import com.cursoservicesweb.curso.services.PaymentService;
 import com.cursoservicesweb.curso.services.PaymentService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -32,6 +33,23 @@ public class PaymentResource {
 	@GetMapping(value = "/{id}")
 	public ResponseEntity<PaymentDTO> findbyId(@PathVariable Long id){
 		PaymentDTO obj = service.findById(id);
+		return ResponseEntity.ok().body(obj);
+	}
+
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	@PostMapping
+	public ResponseEntity<PaymentDTO> insert(@RequestBody PaymentDTO obj){
+		obj = service.insert(obj);
+		URI uri = ServletUriComponentsBuilder.fromCurrentRequest().path("/{id}")
+				.buildAndExpand(obj.getId()).toUri();
+		return ResponseEntity.created(uri).body(obj);
+	}
+	
+
+	@PreAuthorize("hasAnyRole('ADMIN')")
+	@PutMapping(value = "/{id}")
+	public ResponseEntity<PaymentDTO> update(@PathVariable Long id,@RequestBody PaymentDTO obj){
+		obj = service.update(id, obj);
 		return ResponseEntity.ok().body(obj);
 	}
 
