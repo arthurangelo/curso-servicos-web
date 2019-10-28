@@ -4,17 +4,13 @@ import java.time.Instant;
 
 import javax.servlet.http.HttpServletRequest;
 
-import com.cursoservicesweb.curso.services.exceptions.JWTAuthenticationException;
-import com.cursoservicesweb.curso.services.exceptions.JWTAuthorizationException;
+import com.cursoservicesweb.curso.services.exceptions.*;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.FieldError;
 import org.springframework.web.bind.MethodArgumentNotValidException;
 import org.springframework.web.bind.annotation.ControllerAdvice;
 import org.springframework.web.bind.annotation.ExceptionHandler;
-
-import com.cursoservicesweb.curso.services.exceptions.DatabaseException;
-import com.cursoservicesweb.curso.services.exceptions.ResourceNotFoundException;
 
 @ControllerAdvice
 public class ResourceExceptionHandler {
@@ -60,6 +56,14 @@ public class ResourceExceptionHandler {
 	public ResponseEntity<StandardError>  jwtAuthorization(JWTAuthorizationException e,HttpServletRequest request){
 		String error = "Authorization error";
 		HttpStatus status = HttpStatus.FORBIDDEN;
+		StandardError err = new StandardError(Instant.now(),status.value(),error,e.getMessage(),request.getRequestURI());
+		return ResponseEntity.status(status).body(err);
+	}
+
+	@ExceptionHandler(ParamFormatException.class)
+	public ResponseEntity<StandardError>  paramFormat(ParamFormatException e,HttpServletRequest request){
+		String error = "Format error";
+		HttpStatus status = HttpStatus.BAD_REQUEST;
 		StandardError err = new StandardError(Instant.now(),status.value(),error,e.getMessage(),request.getRequestURI());
 		return ResponseEntity.status(status).body(err);
 	}

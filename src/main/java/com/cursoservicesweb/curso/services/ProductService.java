@@ -1,11 +1,13 @@
 package com.cursoservicesweb.curso.services;
 
+import java.util.ArrayList;
 import java.util.List;
 import java.util.Optional;
 import java.util.stream.Collectors;
 
 import javax.persistence.EntityNotFoundException;
 
+import com.cursoservicesweb.curso.services.exceptions.ParamFormatException;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.dao.DataIntegrityViolationException;
 import org.springframework.dao.EmptyResultDataAccessException;
@@ -37,10 +39,32 @@ public class ProductService {
     @Autowired
     private CategoryRepository categoryrepository;
 
-    public Page<ProductDTO> findAllPaged(Pageable pageable) {
-        Page<Product> list = repository.findAll(pageable);
+    public Page<ProductDTO> findByNameCategoryPaged(String name, String categoriesStr, Pageable pageable) {
+        Page<Product> list;
+        if (categoriesStr.equals("")) {
+            list = repository.findByNameContainingIgnoreCase(name, pageable);
+        } else {
+            List<Long> ids = parseIds(categoriesStr);
+            List<Category> categories = ids.stream().map(id -> categoryrepository.getOne(id)).collect(Collectors.toList());
+            list = repository.findByNameContainingIgnoreCaseAndCategoriesIn(name, categories, pageable);
+        }
         return list.map(e -> new ProductDTO(e));
+    }
 
+    private List<Long> parseIds(String categories) {
+
+        String[] idsArray = categories.split(",");
+        List<Long> list = new ArrayList<>();
+
+        for (String idStr : idsArray) {
+            try {
+                list.add(Long.parseLong(idStr));
+            } catch (NumberFormatException e) {
+                throw new ParamFormatException("Invalid categories format");
+            }
+        }
+
+        return list;
     }
 
     public ProductDTO findById(Long id) {
@@ -121,18 +145,18 @@ public class ProductService {
         repository.save(product);
     }
 
-	@Transactional
-	public void removeCategory(Long id, CategoryDTO dto) {
-		Product product = repository.getOne(id);
-		Category category = categoryrepository.getOne(dto.getId());
-		product.getCategories().remove(category);
-		repository.save(product);
-	}
+    @Transactional
+    public void removeCategory(Long id, CategoryDTO dto) {
+        Product product = repository.getOne(id);
+        Category category = categoryrepository.getOne(dto.getId());
+        product.getCategories().remove(category);
+        repository.save(product);
+    }
 
-	@Transactional
-	public void setCategories(Long id, List<CategoryDTO> categories){
-		Product product = repository.getOne(id);
-		setProductCategories(product,categories);
-		repository.save(product);
-	}
+    @Transactional
+    public void setCategories(Long id, List<CategoryDTO> categories) {
+        Product product = repository.getOne(id);
+        setProductCategories(product, categories);
+        repository.save(product);
+    }
 }
