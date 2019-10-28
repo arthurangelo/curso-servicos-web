@@ -1,5 +1,6 @@
 package com.cursoservicesweb.curso.services;
 
+import java.time.Instant;
 import java.util.List;
 import java.util.Optional;
 import java.util.Set;
@@ -7,6 +8,10 @@ import java.util.stream.Collectors;
 
 import com.cursoservicesweb.curso.dto.OrderItemDTO;
 import com.cursoservicesweb.curso.entities.OrderItem;
+import com.cursoservicesweb.curso.entities.Product;
+import com.cursoservicesweb.curso.entities.enums.OrderStatus;
+import com.cursoservicesweb.curso.repositories.OrderItemRepository;
+import com.cursoservicesweb.curso.repositories.ProductRepository;
 import com.cursoservicesweb.curso.repositories.UserRepository;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
@@ -29,6 +34,12 @@ public class OrderService {
 
     @Autowired
 	private UserRepository userRepository;
+
+    @Autowired
+    private ProductRepository productRepository;
+
+    @Autowired
+    private OrderItemRepository orderItemRepository;
 
     public List<OrderDTO> findAll() {
         List<Order> list = repository.findAll();
@@ -64,5 +75,24 @@ public class OrderService {
 		User client = userRepository.getOne(clientId);
 		List<Order> listOrder = repository.findByClient(client);
 		return listOrder.stream().map(e -> new OrderDTO(e)).collect(Collectors.toList());
+	}
+
+	@Transactional
+	public OrderDTO placeOrder(List<OrderItemDTO> dto) {
+        User client = authService.authenticad();
+        Order order = new Order(null, Instant.now(),client, OrderStatus.WAITING_PAYMENT);
+
+        for(OrderItemDTO itemDTO : dto){
+            Product product = productRepository.getOne(itemDTO.getProductId()) ;
+            OrderItem item = new OrderItem(order,product,itemDTO.getQuantity(),itemDTO.getPrice());
+
+            order.getOrderItems().add(item);
+        }
+
+        repository.save(order);
+        orderItemRepository.saveAll(order.getOrderItems());
+
+        return new OrderDTO(order);
+
 	}
 }
