@@ -1,7 +1,7 @@
 package com.cursoservicesweb.curso.resources;
 
-import com.cursoservicesweb.curso.dto.CategoryDTO;
 import com.cursoservicesweb.curso.dto.CredentialsDTO;
+import com.cursoservicesweb.curso.dto.EmailDTO;
 import com.cursoservicesweb.curso.dto.TokenDTO;
 import com.cursoservicesweb.curso.services.AuthService;
 import org.springframework.beans.factory.annotation.Autowired;
@@ -10,9 +10,6 @@ import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RestController;
-import org.springframework.web.servlet.support.ServletUriComponentsBuilder;
-
-import java.net.URI;
 
 @RestController
 @RequestMapping(value = "/auth")
@@ -26,9 +23,16 @@ public class AuthResource {
         TokenDTO tokenDTO = service.authenticate(dto);
         return ResponseEntity.ok().body(tokenDTO);
     }
+
     @PostMapping("/refresh")
     public ResponseEntity<TokenDTO> refresh(){
         TokenDTO tokenDTO = service.refresToken();
         return ResponseEntity.ok().body(tokenDTO);
+    }
+
+    @PostMapping("/forgot")
+    public ResponseEntity<Void> forgot(@RequestBody EmailDTO dto){
+       service.sendNewPassword(dto.getEmail());
+        return ResponseEntity.noContent().build();
     }
 }
