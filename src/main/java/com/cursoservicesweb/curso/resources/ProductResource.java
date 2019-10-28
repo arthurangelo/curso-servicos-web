@@ -5,6 +5,7 @@ import java.util.List;
 
 import javax.validation.Valid;
 
+import com.cursoservicesweb.curso.dto.CategoryDTO;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
@@ -78,6 +79,27 @@ public class ProductResource {
         Page<ProductDTO> list = service.findByCategoryPaged(categoryId,pageRequest);
         return ResponseEntity.ok().body(list);
 
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PutMapping(value = "/{id}/addcategory")
+    public ResponseEntity<Void> addCategory(@PathVariable Long id, @RequestBody CategoryDTO dto) {
+        service.addCategory(id,dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PutMapping(value = "/{id}/removecategory")
+    public ResponseEntity<Void> removeCategory(@PathVariable Long id, @RequestBody CategoryDTO dto) {
+        service.removeCategory(id,dto);
+        return ResponseEntity.noContent().build();
+    }
+
+    @PreAuthorize("hasAnyRole('ADMIN')")
+    @PutMapping(value = "/{id}/setcategories")
+    public ResponseEntity<Void> setCategories(@PathVariable Long id, @RequestBody  List<CategoryDTO> categories) {
+        service.setCategories(id,categories);
+        return ResponseEntity.noContent().build();
     }
 
 }
